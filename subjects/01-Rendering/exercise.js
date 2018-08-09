@@ -29,8 +29,51 @@ const DATA = {
   ]
 };
 
-function Menu() {
-  return <div>Open the console, you have failing tests.</div>;
+class Menu extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            selected: 'mexican',
+            sorted: 'name'
+        };
+    }
+
+    sortBy = (e) => {
+        this.setState({sorted: e.target.value});
+    }
+
+    handleChange = (e) => {
+        this.setState({selected: e.target.value});
+    }
+
+    render() {
+        const itemsData = DATA.items.sort(sortBy(this.state.sorted));
+    
+        let items = itemsData.map((item, index) => {
+            if (item.type === this.state.selected) {
+                return (
+                    <li key={index.toString()}>{item.name}</li>
+                );
+            }
+        });
+
+        return (
+            <div>
+                <h1>{DATA.title}</h1>
+                Sort By: 
+                <button value="id" onClick={this.sortBy}>ID</button>
+                <button value="name" onClick={this.sortBy}>Name</button>
+                <br />
+                Filter by Cuisine: 
+                <select selected={this.state.selected} onChange={this.handleChange}>
+                    <option value="mexican">mexican</option>
+                    <option value="english">english</option>
+                </select><br />
+                <ul>{items}</ul>
+            </div>
+        );
+    }
 }
 
 ReactDOM.render(<Menu />, document.getElementById("app"), () => {

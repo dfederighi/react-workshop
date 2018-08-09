@@ -12,21 +12,23 @@ export function run(component) {
     "Tabs should not have state"
   );
 
+  setTimeout(() => {
   Simulate.click(tabs[1]);
   assert(
     node.innerHTML.match(/STEP TWO/) != null,
-    "clicking changes tabs"
+    "clicking changes tabs 1"
   );
 
   Simulate.click(tabs[2]);
   assert(
     node.innerHTML.match(/STEP THREE/) != null,
-    "clicking changes tabs"
+    "clicking changes tabs 2"
   );
+}, 500);
 
   Simulate.click(tabs[0]);
   assert(
     node.innerHTML.match(/STEP ONE/) != null,
-    "clicking changes tabs"
+    "clicking changes tabs 0"
   );
 }

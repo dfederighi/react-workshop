@@ -33,6 +33,8 @@ export function run(component) {
   console.log("after clicking the second tab...");
 
   Simulate.click(tabs[1]);
+  
+setTimeout(() => {
   assert(
     tabs[1] &&
       tabs[1].style.borderBottomColor ===
@@ -47,8 +49,10 @@ export function run(component) {
   );
   assert(
     panel.textContent.trim() === "Sunshine, beaches, and Carnival",
-    "panel has the correct content"
+    "panel has the correct content (Sunshine ... )"
   );
 
   Simulate.click(tabs[0]);
+}, 500);
+
 }

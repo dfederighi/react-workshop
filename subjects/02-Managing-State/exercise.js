@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 import React from "react";
 import ReactDOM from "react-dom";
+import PropTypes from 'prop-types';
 
 const styles = {};
 
@@ -31,23 +32,60 @@ styles.activeTab = {
 };
 
 styles.panel = {
-  padding: 10
+  padding: 10,
+  display: 'block'
 };
 
 class Tabs extends React.Component {
-  render() {
+    static propTypes = {
+        data: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            name: PropTypes.string.isRequired,
+            description: PropTypes.string.isRequired 
+        })).isRequired
+    }
+
+  constructor(props) {
+      super(props);
+      this.state = {
+        selectedTab: 1
+      };
+  }
+
+  selectTab = (e, id) => {
+      this.setState({selectedTab: id});
+  }
+
+  buildTabs = () => {
+    return this.props.data.map((item, index) => {
+        const tabStyles = this.state.selectedTab === item.id ? styles.activeTab : styles.tab;
+        return (
+            <div onClick={(e) => this.selectTab(e, item.id)} key={index.toString()} className="Tab" style={tabStyles}>
+                {item.name}
+            </div>
+        );
+    });
+  }
+
+  buildPanels = () => {
+    const item = this.props.data.find((item) => {
+        return item.id === this.state.selectedTab;
+    });
+    
     return (
-      <div className="Tabs">
-        <div className="Tab" style={styles.activeTab}>
-          Active
-        </div>
-        <div className="Tab" style={styles.tab}>
-          Inactive
-        </div>
         <div className="TabPanel" style={styles.panel}>
-          Panel
+            {item.description}
         </div>
-      </div>
+    );
+  }
+
+  render() {
+
+    return (
+        <div className="Tabs">
+            {this.buildTabs()}
+            {this.buildPanels()}
+        </div>
     );
   }
 }
@@ -77,6 +115,7 @@ const DATA = [
   { id: 3, name: "Russia", description: "World Cup 2018!" }
 ];
 
+
 ReactDOM.render(
   <App countries={DATA} />,
   document.getElementById("app"),
@@ -84,3 +123,5 @@ ReactDOM.render(
     require("./tests").run(this);
   }
 );
+
+// ReactDOM.render(<App countries={DATA} />, document.getElementById('app'));

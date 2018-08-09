@@ -25,15 +25,52 @@ import PropTypes from "prop-types";
 import getAddressFromCoords from "./utils/getAddressFromCoords";
 import LoadingDots from "./LoadingDots";
 
+class GeoPosition extends React.Component {
+
+    state = {
+        coords: {
+          latitude: null,
+          longitude: null
+        },
+        error: null
+      };
+
+    componentDidMount() {
+        this.geoId = navigator.geolocation.watchPosition(
+            position => {
+                this.setState({
+                    coords: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                    }
+                });
+            },
+            error => {
+                this.setState({ error });
+            }
+        );
+    }
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.geoId);
+    }
+
+    render() {
+        return this.props.render(this.state);
+    }
+}
+
 class App extends React.Component {
+    /*
   state = {
     coords: {
       latitude: null,
       longitude: null
     },
     error: null
-  };
+  };*/
 
+  /*
   componentDidMount() {
     this.geoId = navigator.geolocation.watchPosition(
       position => {
@@ -49,11 +86,15 @@ class App extends React.Component {
       }
     );
   }
+  */
 
+  /*
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.geoId);
   }
+  */
 
+  /*
   render() {
     return (
       <div>
@@ -70,6 +111,26 @@ class App extends React.Component {
         )}
       </div>
     );
+  }
+  */
+  render() {
+      return (
+        <GeoPosition render={y => (
+            <div>
+                <h1>Geolocation</h1>
+                {y.error ? (
+                <div>Error: {y.error.message}</div>
+                ) : (
+                <dl>
+                    <dt>Latitude</dt>
+                    <dd>{y.coords.latitude || <LoadingDots />}</dd>
+                    <dt>Longitude</dt>
+                    <dd>{y.coords.longitude || <LoadingDots />}</dd>
+                </dl>
+                )}
+            </div>
+        )} />
+      );
   }
 }
 

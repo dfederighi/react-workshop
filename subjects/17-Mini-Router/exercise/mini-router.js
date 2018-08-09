@@ -15,31 +15,75 @@ history.listen(() => {
 history.push('/something')
 */
 
+const RouterContext = React.createContext();
+
 class Router extends React.Component {
+    
   history = createHashHistory();
 
+  state = { location: this.history.location };
+
+  componentDidMount() {
+    this.history.listen(location => {
+      this.setState({ location });
+    });
+  }
+
   render() {
-    return this.props.children;
+    return (
+        <RouterContext.Provider value={{
+            location: this.state.location, 
+            history: this.history
+        }}>
+            {this.props.children}
+        </RouterContext.Provider>
+    );
   }
 }
 
 class Route extends React.Component {
   render() {
     const { path, render, component: Component } = this.props;
-    return null;
+
+    return (
+        <RouterContext.Consumer>
+        {context => {
+            const {location} = context;
+            if (location.pathname.startsWith(path)) {
+                if (render) {
+                    return render();
+                } else if (Component) {
+                    return <Component />
+                } else {
+                    return null;
+                }
+            }
+        }}
+        </RouterContext.Consumer>
+    );
   }
 }
 
+
 class Link extends React.Component {
-  handleClick = e => {
+  handleClick = (e, context) => {
     e.preventDefault();
+    context.history.push(this.props.to);
   };
 
   render() {
+    const { history } = this.context;
+
     return (
-      <a href={`#${this.props.to}`} onClick={this.handleClick}>
-        {this.props.children}
-      </a>
+        <RouterContext.Consumer>
+        {context => {
+            return (
+                <a href={`#${this.props.to}`} onClick={(e) => {this.handleClick(e, context)}}>
+                    {this.props.children}
+                </a>
+            );
+        }}
+        </RouterContext.Consumer>
     );
   }
 }

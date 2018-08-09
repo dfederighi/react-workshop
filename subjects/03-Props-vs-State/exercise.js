@@ -23,21 +23,26 @@ import data from "./data";
 
 class Tabs extends React.Component {
   static propTypes = {
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    selectedTab: PropTypes.any,
+    onTabSelect: PropTypes.func
   };
 
-  state = {
-    activeIndex: 0
-  };
+  // state = {
+    // activeIndex: 0
+  // };
 
+  /*
   selectTab(activeIndex) {
     this.setState({ activeIndex });
   }
+  */
 
   renderTabs() {
     return this.props.data.map((tab, index) => {
       const style =
-        this.state.activeIndex === index
+        // this.state.activeIndex === index
+        this.props.selectedTab === index 
           ? styles.activeTab
           : styles.tab;
 
@@ -46,7 +51,7 @@ class Tabs extends React.Component {
           className="Tab"
           key={tab.name}
           style={style}
-          onClick={() => this.selectTab(index)}
+          onClick={(e) => this.props.onTabSelect(e, index)}
         >
           {tab.name}
         </div>
@@ -55,7 +60,8 @@ class Tabs extends React.Component {
   }
 
   renderPanel() {
-    const tab = this.props.data[this.state.activeIndex];
+    // const tab = this.props.data[this.state.activeIndex];
+    const tab = this.props.data[this.props.selectedTab];
 
     return (
       <div>
@@ -75,11 +81,22 @@ class Tabs extends React.Component {
 }
 
 class App extends React.Component {
+constructor(props) {
+    super(props);
+    this.state = {
+        selectedTab: 0
+    }
+}
+
+handleSelectedTab = (e, id) => {
+    this.setState({selectedTab: id});
+}
+
   render() {
     return (
       <div>
         <h1>Props v. State</h1>
-        <Tabs ref="tabs" data={this.props.tabs} />
+        <Tabs onTabSelect={this.handleSelectedTab} selectedTab={this.state.selectedTab} ref="tabs" data={this.props.tabs} />
       </div>
     );
   }

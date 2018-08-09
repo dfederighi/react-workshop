@@ -21,7 +21,31 @@ import ReactDOM from "react-dom";
 import serializeForm from "form-serialize";
 
 class CheckoutForm extends React.Component {
+    state = {
+        billingName: "Dale Federighi",
+        billingState: "CA",
+        shippingName: "",
+        shippingState: "",
+        shippingSameAsBilling: false
+    };
+
+    dupeDataToShipping = (e) => {
+        const isChecked = e.target.checked;
+        console.log('isChecked:', isChecked);
+        this.setState({
+            shippingSameAsBilling: e.target.checked,
+            shippingName: isChecked ? this.state.billingName : '',
+            shippingState: isChecked ? this.state.billingState : ''
+        });
+
+    }
+
+    updateField = (e, field) => {
+        this.setState({[field]: e.target.value});
+    }
+
   render() {
+      console.log('render():state:', this.state);
     return (
       <div>
         <h1>Checkout</h1>
@@ -30,12 +54,12 @@ class CheckoutForm extends React.Component {
             <legend>Billing Address</legend>
             <p>
               <label>
-                Billing Name: <input type="text" />
+                Billing Name: <input onChange={(e) => this.updateField(e, 'billingName')} type="text" value={this.state.billingName} />
               </label>
             </p>
             <p>
               <label>
-                Billing State: <input type="text" size="2" />
+                Billing State: <input type="text" size="6" onChange={(e) => this.updateField(e, 'billingState')} value={this.state.billingState} />
               </label>
             </p>
           </fieldset>
@@ -44,17 +68,17 @@ class CheckoutForm extends React.Component {
 
           <fieldset>
             <label>
-              <input type="checkbox" /> Same as billing
+              <input type="checkbox" checked={this.state.shippingSameAsBilling} onChange={(e) => { this.dupeDataToShipping(e) }} /> Same as billing
             </label>
             <legend>Shipping Address</legend>
             <p>
               <label>
-                Shipping Name: <input type="text" />
+                Shipping Name: <input type="text" value={this.state.shippingName} />
               </label>
             </p>
             <p>
               <label>
-                Shipping State: <input type="text" size="2" />
+                Shipping State: <input type="text" size="6" value={this.state.shippingState} />
               </label>
             </p>
           </fieldset>

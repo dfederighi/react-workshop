@@ -26,8 +26,22 @@ class RadioGroup extends React.Component {
     defaultValue: PropTypes.string
   };
 
+  state = { value: this.props.defaultValue };
+
   render() {
-    return <div>{this.props.children}</div>;
+    return (
+        <div>
+        {React.Children.map(this.props.children, (child, index) => {
+            return React.cloneElement(child, {
+                _onClick: () => {
+                    this.props.onChange(child.props.value);
+                    this.setState({value: child.props.value});
+                },
+                _selected: this.state.value === child.props.value
+            })
+        })}
+        </div>
+    );
   }
 }
 
@@ -37,12 +51,15 @@ class RadioOption extends React.Component {
   };
 
   render() {
+
     return (
-      <div>
-        <RadioIcon isSelected={false} /> {this.props.children}
+      <div onClick={this.props._onClick}>
+        <RadioIcon isSelected={this.props._selected} /> {this.props.children}
       </div>
     );
-  }
+    
+
+    }
 }
 
 class RadioIcon extends React.Component {
@@ -69,12 +86,17 @@ class RadioIcon extends React.Component {
 }
 
 class App extends React.Component {
+    state = { radioValue: 'fm' };
+    handleChange = (e) => {
+        this.setState({radioValue: e});
+    }
   render() {
     return (
       <div>
         <h1>♬ It's about time that we all turned off the radio ♫</h1>
+        <h2>Now playing {this.state.radioValue}</h2>
 
-        <RadioGroup defaultValue="fm">
+        <RadioGroup defaultValue="tape" onChange={this.handleChange}>
           <RadioOption value="am">AM</RadioOption>
           <RadioOption value="fm">FM</RadioOption>
           <RadioOption value="tape">Tape</RadioOption>

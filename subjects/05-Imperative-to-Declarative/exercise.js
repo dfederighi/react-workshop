@@ -16,12 +16,16 @@ class Modal extends React.Component {
     children: PropTypes.node
   };
 
-  open() {
-    $(this.node).modal("show");
+  doImperativeWork() {
+    $(this.node).modal(this.props.isOpen ? 'show' : 'hide');
   }
 
-  close() {
-    $(this.node).modal("hide");
+  componentDidMount() {
+    this.doImperativeWork();
+  }
+
+  componentDidUpdate() {
+    this.doImperativeWork();
   }
 
   render() {
@@ -30,7 +34,7 @@ class Modal extends React.Component {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h4 className="modal-title">{this.props.title}</h4>
+              <h4 className="modal-title">Foo - {this.props.title}</h4>
             </div>
             <div className="modal-body">{this.props.children}</div>
           </div>
@@ -41,12 +45,19 @@ class Modal extends React.Component {
 }
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isOpen: false
+        };
+    }
+
   openModal = () => {
-    this.modal.open();
+    this.setState({isOpen: true});
   };
 
   closeModal = () => {
-    this.modal.close();
+    this.setState({isOpen: false});
   };
 
   render() {
@@ -60,7 +71,7 @@ class App extends React.Component {
 
         <Modal
           title="Declarative is better"
-          ref={modal => (this.modal = modal)}
+          isOpen={this.state.isOpen}
         >
           <p>Calling methods on instances is a FLOW not a STOCK!</p>
           <p>

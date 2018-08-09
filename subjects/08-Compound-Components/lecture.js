@@ -43,6 +43,32 @@ class Tabs extends React.Component {
   }
 }
 
+class Tabs2 extends React.Component {
+    state = { activeIndex: 0 };
+
+    render() {
+        return <div>{this.props.children}</div>
+    }
+}
+
+const TabList = (props) => {
+    return (
+        <div style={styles.tabList}>{props.children}</div>
+    );
+}
+
+const Tab = ({children}) => {
+    return <div style={styles.tab}>{children}</div>
+}
+
+const TabPanels = ({children}) => {
+    return <div style={styles.tabPanels}>{children}</div>
+}
+
+const TabPanel = ({children}) => {
+    return <div style={styles.tabPanel}>{children}</div>
+}
+
 class App extends React.Component {
   render() {
     const tabData = [
